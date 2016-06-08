@@ -1,0 +1,96 @@
+#!/usr/bin/env node
+"use strict";
+
+const program = require("commander");
+const packageJson = require("../package.json");
+const logger = require("log4js").getLogger();
+const Deployer = require("./lib/deployer");
+const convertStringToArray = require("./util/convert-string-to-array");
+
+const parseBoolean = function(str) {
+	return (str === "true");
+};
+
+program
+	.version(packageJson.version)
+	.usage("[options]")
+	.option("--api-version <version>", "The kubernetes api version to use", process.env.API_VERSION)
+	.option("-s, --sha <sha>", "The commit sha that we are deploying", process.env.CI_COMMIT_ID)
+	.option("-l, --selector <selector>", "Selector (label query) to filter on", process.env.SELECTOR)
+	.option("-c, --configs <pattern>", "Set the glob pattern to search for cluster config files", process.env.CONFIGS)
+	.option("-n, --namespaces-dir <dir>", "Set the directory where all the namespace files are. They should be grouped in folders matching the metadata.name of the cluster that you want them deployed to", process.env.NAMESPACES_DIR)
+	.option("-m, --manifests-dir <dir>", "Set the directory where all the manifest files are. They should be grouped in folders matching the metadata.name of the cluster that you want them deployed to", process.env.MANIFESTS_DIR)
+	.option("-d, --dry-run <boolean>", "Will only show the diff and will not push anything to the cluster", parseBoolean, parseBoolean(process.env.DRY_RUN))
+	.option("--is-rollback <boolean>", "A boolean flag that is passed in the available payload post", parseBoolean, parseBoolean(process.env.IS_ROLLBACK))
+	.option("--diff <boolean>", "Will show a diff", parseBoolean, parseBoolean(process.env.DIFF))
+	.option("--force <boolean>", "Will push all changes even if there are no differences", parseBoolean, parseBoolean(process.env.FORCE))
+	.option("--available-enabled <boolean>", "Will check if deployed service is available, but will only affect if deployment is considered successful or not if --available-required is also enabled", parseBoolean, parseBoolean(process.env.AVAILABLE_ENABLED))
+	.option("--available-webhook <url>", "The URL you want to send the status payload of the deployment progress to. You can provide multiple endpoints by using a JSON array of URLs", process.env.AVAILABLE_WEBHOOK)
+	.option("--available-required <boolean>", "Will only finish once the manifest is considered available in the cluster", parseBoolean, parseBoolean(process.env.AVAILABLE_REQUIRED))
+	.option("--available-keep-alive <boolean>", "Will print the status of the available check every AVAILABLE_KEEP_ALIVE_INTERVAL seconds (useful for CI tools that require log output to prevent timeouts)", parseBoolean, parseBoolean(process.env.AVAILABLE_KEEP_ALIVE))
+	.option("--available-keep-alive-interval <int>", "Determines the interval at which the keep alive message will be printed", parseInt, parseInt(process.env.AVAILABLE_KEEP_ALIVE_INTERVAL))
+	.option("--available-timeout <int>", "The number of seconds to wait for a given manifest to be available", parseInt, parseInt(process.env.AVAILABLE_TIMEOUT))
+	.option("--dependency-wait <int>", "The number of seconds to wait between status check attempts for a dependency", parseInt, parseInt(process.env.DEPENDENCY_WAIT))
+	.option("--dependency-timeout <int>", "The number of seconds to wait before timing out waiting for a dependency to be available", parseInt, parseInt(process.env.DEPENDENCY_TIMEOUT))
+	.option("--github-enabled <boolean>", "", parseBoolean, parseBoolean(process.env.GITHUB_ENABLED))
+	.option("--github-token <token>", "", process.env.GITHUB_AUTH_TOKEN)
+	.option("--github-user <user>", "", process.env.GITHUB_USER)
+	.option("--github-repo <repo>", "", process.env.GITHUB_REPO)
+	.parse(process.argv)
+;
+
+if (program.dryRun === "true") {
+	logger.info("Dry run enabled, will not deploy any changes");
+}
+
+const options = {
+	apiVersion: program.apiVersion,
+	sha: program.sha,
+	selector: program.selector,
+	dryRun: program.dryRun,
+	isRollback: program.isRollback,
+	diff: program.diff,
+	force: program.force,
+	available: {
+		enabled: program.availableEnabled,
+		webhooks: convertStringToArray(program.availableWebhook),
+		required: program.availableRequired,
+		keepAlive: program.availableKeepAlive,
+		keepAliveInterval: program.availableKeepAliveInterval,
+		timeout: program.availableTimeout
+	},
+	dependency: {
+		wait: program.dependencyWait,
+		timeout: program.dependencyTimeout
+	},
+	github: {
+		enabled: program.githubEnabled,
+		token: program.githubToken,
+		user: program.githubUser,
+		repo: program.githubRepo
+	}
+};
+const deployer = new Deployer(options);
+
+// setup logging of events
+deployer.on("info", function(message) {
+	logger.info(message);
+});
+deployer.on("warn", function(message) {
+	logger.warn(message);
+});
+deployer.on("error", function(message) {
+	logger.error(message);
+});
+deployer.on("fatal", function(message) {
+	logger.fatal(message);
+});
+
+deployer
+	.deploy(program.configs, program.manifestsDir, program.namespacesDir)
+	.then(() => {})
+	.catch((err) => {
+		logger.fatal(err);
+		throw new Error(err);
+	})
+	.done();

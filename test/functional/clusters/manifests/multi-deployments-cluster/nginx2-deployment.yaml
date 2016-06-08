@@ -1,0 +1,18 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: nginx2-deployment
+  labels:
+    app: test
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: nginx2-pod
+    spec:
+      containers:
+        - name: nginx2-con
+          image: oveits/docker-nginx-busybox:latest
+          ports:
+            - containerPort: 80

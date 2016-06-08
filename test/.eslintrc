@@ -1,0 +1,9 @@
+{
+	"extends": "eslint-config-invision",
+	"env": {
+		"mocha": true
+	},
+	"rules": {
+		"no-unused-expressions": 0
+	}
+}

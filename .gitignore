@@ -1,0 +1,39 @@
+# Codeship
+codeship.aes
+codeship-dockercfg
+/configs
+/generated
+/manifests
+/namespaces
+
+# Filesystem
+.DS_Store
+
+# IDE files
+.idea
+
+# Dependency directories
+node_modules
+
+# Generated Folders
+coverage
+
+# User-specific files (exclude templates)
+*.env
+!*.template.env
+
+# Logs
+logs
+*.log
+npm-debug.log
+
+# Runtime data
+pids
+*.pid
+*.seed
+
+# Misc Files
+ngrok
+*.BAK
+dump.rdb
+*.orig

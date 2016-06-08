@@ -1,0 +1,8 @@
+deployer:
+  build: .
+  volumes:
+    - ./src:/src
+    - ./configs:/configs
+    - ./manifests:/manifests
+    - ./namespaces:/namespaces
+  env_file: deployer.env

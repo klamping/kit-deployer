@@ -1,0 +1,16 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: ls-job
+  annotations:
+    kit-deployer/service-name: 'ls-job'
+spec:
+  template:
+    metadata:
+      name: ls-pod
+    spec:
+      containers:
+        - name: ls-con
+          image: busybox:latest
+          command: ["ls", "-l"]
+      restartPolicy: Never

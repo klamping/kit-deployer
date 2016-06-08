@@ -1,0 +1,44 @@
+- name: Tests
+  type: parallel
+  encrypted_dockercfg_path: codeship-dockercfg.encrypted
+  steps:
+    # TODO: disable eslint until eslint-config-invision package is public
+    # - name: Run lint tests
+    #   service: test
+    #   command: lint
+    - name: Run unit tests
+      service: test
+      command: test-unit
+    - name: Run help
+      service: app
+      command: --help
+    - name: Verify kubectl binary
+      service: test
+      command: test-kubectl
+
+- name: Registry
+  type: serial
+  encrypted_dockercfg_path: codeship-dockercfg.encrypted
+  steps:
+    - name: Push version tag
+      type: push
+      tag: master
+      service: app
+      image_tag: "v1"
+      registry: quay.io
+      image_name: quay.io/invision/kit-deployer
+      encrypted_dockercfg_path: codeship-dockercfg.encrypted
+    - name: Push branch tag
+      type: push
+      tag: master
+      service: app
+      image_tag: "{{ .Branch }}"
+      registry: quay.io
+      image_name: quay.io/invision/kit-deployer
+      encrypted_dockercfg_path: codeship-dockercfg.encrypted
+
+- name: Publish
+  tag: ^(master|PRERELEASE-.*)$
+  service: publish
+  encrypted_dockercfg_path: codeship-dockercfg.encrypted
+  command: "true"

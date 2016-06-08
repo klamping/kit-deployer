@@ -1,0 +1,7 @@
+test_functional:
+  build: .
+  net: host
+  volumes:
+    - ./test:/test
+  entrypoint: npm run
+  command: test-functional

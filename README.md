@@ -5,7 +5,7 @@
 </p>
 
 # kit-deployer
-[![Codeship](https://codeship.com/projects/d87729b0-bbaf-0133-5c27-72d8958adba6/status?branch=master)](https://codeship.com/projects/135967)
+[ ![Codeship Status for InVisionApp/kit-deployer](https://codeship.com/projects/71a53610-0fe1-0134-46a8-063ac029d855/status?branch=master)](https://codeship.com/projects/156809)
 [![Dependency Status](https://david-dm.org/InVisionApp/kit-deployer.svg)](https://david-dm.org/InVisionApp/kit-deployer)
 [![devDependency Status](https://david-dm.org/InVisionApp/kit-deployer/dev-status.svg)](https://david-dm.org/InVisionApp/kit-deployer#info=devDependencies)
 

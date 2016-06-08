@@ -1,0 +1,2 @@
+# This will make npm ignore the .gitignore file so that binaries are included on npm publish
+!kubectl

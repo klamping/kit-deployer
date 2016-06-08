@@ -1,0 +1,49 @@
+{
+  "name": "kit-deployer",
+  "version": "0.0.0-semantic-release",
+  "description": "Use to deploy files to multiple kubernetes clusters.",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/InVisionApp/kit-deployer"
+  },
+  "author": "Chesley Brown <chesley@invisionapp.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/InVisionApp/kit-deployer/issues"
+  },
+  "homepage": "https://github.com/InVisionApp/kit-deployer",
+  "main": "./src/index.js",
+  "bin": {
+    "deployer": "./src/deployer",
+    "kubectl": "./bin/kubectl"
+  },
+  "scripts": {
+    "prepublish": "node scripts/download-kubectl.js",
+    "test-unit": "mocha test/unit --recursive",
+    "test-functional": "mocha test/functional --recursive",
+    "test-kubectl": "kubectl version --client | grep \\\"${KUBE_VERSION}\\\"; test $? -eq 0",
+    "lint": "eslint src test scripts"
+  },
+  "dependencies": {
+    "bluebird": "3.3.1",
+    "commander": "2.9.0",
+    "deep-diff": "0.3.3",
+    "log4js": "0.6.33",
+    "github": "0.2.4",
+    "glob": "6.0.4",
+    "js-yaml": "3.5.2",
+    "lodash": "4.3.0",
+    "request-promise": "3.0.0"
+  },
+  "devDependencies": {
+    "chai": "3.5.0",
+    "mocha": "2.4.5",
+    "sinon": "1.17.3",
+    "sinon-chai": "2.8.0"
+  },
+  "files": [
+    "bin",
+    "LICENSE",
+    "src"
+  ]
+}
