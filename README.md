@@ -110,6 +110,8 @@ Currently we only properly support the following types to be used as manifests. 
 
 ### Order of Deploys (beta)
 
+**NOTE: this feature is a work in progress and may not function correctly**
+
 By default, all manifests are deployed to a given cluster at the same time. If however you require manifests to be deployed in a specific order you can utilize the "dependency-selector". By specifying a manifest with dependencies on other resources, the deployer will only deploy that manifest once those other services are fully available on the cluster.
 
 You can specify dependencies using a metadata annotation called `kit-deployer/dependency-selector`. It should be a valid [label selector](http://kubernetes.io/docs/user-guide/labels/). For example:
