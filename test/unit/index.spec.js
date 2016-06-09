@@ -1,6 +1,6 @@
 var expect = require("chai").expect;
 
-describe("KitImageDeployer", function() {
+describe("KitDeployer", function() {
 	describe("when required", function() {
 		var KitDeployer;
 		beforeEach(function() {
