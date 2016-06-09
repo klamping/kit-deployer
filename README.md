@@ -1,7 +1,5 @@
 <p align="center">
-  <a href="http://gulpjs.com">
-    <img src="https://github.com/InVisionApp/kit-deployer/raw/master/media/kit-logo-horz-sm.png">
-  </a>
+  <img src="https://github.com/InVisionApp/kit-deployer/raw/master/media/kit-logo-horz-sm.png">
 </p>
 
 # kit-deployer
