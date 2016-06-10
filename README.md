@@ -156,9 +156,9 @@ The following environment variables are used by this service.
 | `AVAILABLE_REQUIRED` | Will only finish once the manifest is considered available in the cluster | yes | `false` |
 | `AVAILABLE_KEEP_ALIVE` | Will print the status of the available check every `AVAILABLE_KEEP_ALIVE_INTERVAL` seconds (useful for CI tools that require log output to prevent timeouts) | yes | `false` |
 | `AVAILABLE_KEEP_ALIVE_INTERVAL` | Determines the interval at which the keep alive message will be printed | yes | `30` |
-| `AVAILABLE_TIMEOUT` | The number of seconds to wait for a given manifest to be available | yes | `3600` |
+| `AVAILABLE_TIMEOUT` | The number of seconds to wait for a given manifest to be available | yes | `600` |
 | `DEPENDENCY_WAIT` | The number of seconds to wait between status check attempts for a dependency | yes | `3` |
-| `DEPENDENCY_TIMEOUT` | The number of seconds to wait before timing out waiting for a dependency to be available | yes | `3600` |
+| `DEPENDENCY_TIMEOUT` | The number of seconds to wait before timing out waiting for a dependency to be available | yes | `600` |
 | `GITHUB_ENABLED` | If true, will check the date of the commit against github and will only deploy if the commit is newer than what is on the cluster. | yes | `true` |
 | `GITHUB_AUTH_TOKEN` | Your github token to the repo we are deploying (used to retrieve additional info on the commit) | yes | *empty* |
 | `GITHUB_USER` | The github user that the repo belongs to | yes | *empty* |
