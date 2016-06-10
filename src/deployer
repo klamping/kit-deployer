@@ -88,7 +88,12 @@ deployer.on("fatal", function(message) {
 
 deployer
 	.deploy(program.configs, program.manifestsDir, program.namespacesDir)
-	.then(() => {})
+	.then(() => {
+		// TODO: Should not have to manually exit process, more investigation is needed to determine
+		// why the process doesn't exit automatically, but this fix will resolve hanging builds in
+		// the meantime
+		process.exit(0);
+	})
 	.catch((err) => {
 		logger.fatal(err);
 		throw new Error(err);
