@@ -14,6 +14,7 @@ describe("Functional", function() {
 		process.env.NAMESPACES_DIR = "/test/functional/clusters/namespaces";
 		process.env.MANIFESTS_DIR = "/test/functional/clusters/manifests";
 		process.env.AVAILABLE_ENABLED = "true";
+		process.env.AVAILABLE_TIMEOUT = "60";
 		process.env.AVAILABLE_REQUIRED = "true";
 		process.env.AVAILABLE_KEEP_ALIVE = "true";
 		process.env.AVAILABLE_WEBHOOK = "http://example.com/test";
@@ -136,6 +137,7 @@ describe("Functional", function() {
 		delete process.env.GITHUB_ENABLED;
 		delete process.env.CI_COMMIT_ID;
 		delete process.env.AVAILABLE_ENABLED;
+		delete process.env.AVAILABLE_TIMEOUT;
 		delete process.env.AVAILABLE_REQUIRED;
 		delete process.env.AVAILABLE_KEEP_ALIVE;
 		delete process.env.AVAILABLE_WEB;

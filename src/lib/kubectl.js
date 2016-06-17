@@ -3,38 +3,41 @@
 const spawn = require("child_process").spawn;
 const Promise = require("bluebird");
 const EventEmitter = require("events").EventEmitter;
+const diff = require("deep-diff");
 
 class KubectlWatcher extends EventEmitter {
 	constructor(kubectl, resource, name) {
 		super();
-		let excessData = "";
-		if (typeof kubectl.spawn !== "function") {
-			throw new Error("Must provide instance of Kubectl that has spawn method");
-		}
-		this.child = kubectl.spawn(["get", "--watch", "--output=json", resource, name]);
-		this.child.stdout.setEncoding("utf8");
-		this.child.stdout.on("data", (data) => {
-			try {
-				this.emit("change", JSON.parse(excessData + data));
-				excessData = "";
-			} catch (jsonErr) {
-				// Sometimes the response gets divided into multiple lines, so we append the lines together until we can
-				// parse as valid JSON
-				excessData = excessData + data;
-			}
-		});
-		this.child.stderr.setEncoding("utf8");
-		this.child.stderr.on("data", (err) => {
-			this.emit("error", err);
-		});
-		this.child.on("close", (msg) => {
-			this.emit("close", msg);
-		});
+		this.kubectl = kubectl;
+		this.interval = 3 * 1000; // 3 second polling
+		this.resource = resource;
+		this.name = name;
+		this._previousResult;
+
+		// init
+		this.start();
+	}
+
+	start() {
+		this._timeoutId = setTimeout(() => {
+			this.kubectl
+				.get(this.resource, this.name)
+				.then((result) => {
+					// Only emit a change event if there was a change in the result
+					if (diff(result, this._previousResult)) {
+						this.emit("change", result);
+					}
+					this._previousResult = result;
+				})
+				.catch((err) => {
+					this.emit("error", err);
+				});
+			this.start();
+		}, this.interval);
 	}
 
 	stop() {
-		this.child.stdin.pause();
-		this.child.kill();
+		clearTimeout(this._timeoutId);
 		this.removeAllListeners();
 	}
 }
