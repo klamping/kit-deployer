@@ -284,7 +284,8 @@ class Manifests extends EventEmitter {
 																			manifest: manifest
 																		});
 																	})
-																	.catch(() => {
+																	.catch((err) => {
+																		this.emit("error", err);
 																		this.emit("status", {
 																			cluster: this.options.cluster.metadata.name,
 																			name: manifestName,
